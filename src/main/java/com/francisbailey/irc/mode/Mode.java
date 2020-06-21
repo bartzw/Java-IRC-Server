@@ -24,7 +24,7 @@ public class Mode {
     public static final Mode REOP               = new Mode("r", "REOP");
     public static final Mode OP_TOPIC_ONLY      = new Mode("t", "OP_TOPIC_ONLY");
     public static final Mode CHAN_KEY           = new Mode("k", "CHAN_KEY", true);
-    public static final Mode USER_LIMIT         = new Mode("l", "USER_LIMIT");
+    public static final Mode USER_LIMIT         = new Mode("l", "USER_LIMIT", true);
     public static final Mode BAN_MASK           = new Mode("b", "BAN_MASK");
     public static final Mode BAN_MASK_EXCEPTION = new Mode("e", "BAN_MASK_EXCEPTION");
     public static final Mode INVITATION_MASK    = new Mode("I", "INVITATION_MASK", true);

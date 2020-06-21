@@ -153,7 +153,8 @@ public class ServerMessage implements SendableMessage {
     public static final String RPL_NICK = "NICK";
     public static final String RPL_QUIT = "QUIT";
     public static final String RPL_TOPIC_CHANGE = "TOPIC";
-    
+    public static final String RPL_MODE = "MODE";
+
     private String replyCode;
     private String message;
     private String serverName;
