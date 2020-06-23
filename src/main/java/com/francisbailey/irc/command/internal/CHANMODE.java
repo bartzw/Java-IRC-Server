@@ -83,7 +83,7 @@ public class CHANMODE implements Executable {
                 connection.send(ServerMessageBuilder
                     .from(server.getName())
                     .withReplyCode(ServerMessage.RPL_CHANNELMODEIS)
-                    .andMessage(nick + " " + chanName + " +" + channel.getModes())
+                    .andMessage(nick + " " + chanName + " +" + channel.getModes() + " " + channel.getKey() + " " + channel.getUserLimit())
                     .build()
                 );
             }
@@ -133,13 +133,14 @@ public class CHANMODE implements Executable {
                                 }
                             }
 
-                            if (channel.getModes().length() > 0) {
+/*                            if (channel.getModes().length() > 0) {
+                                System.out.println("TEST1");
                                 connection.send(serverMessage
                                     .withReplyCode(ServerMessage.RPL_CHANNELMODEIS)
                                     .andMessage(message + " +" + channel.getModes())
                                     .build()
                                 );
-                            }
+                            }*/
                         }
                         catch (MissingModeArgumentException e) {
                             connection.send(serverMessage

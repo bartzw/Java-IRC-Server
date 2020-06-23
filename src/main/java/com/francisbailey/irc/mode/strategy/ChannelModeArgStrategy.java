@@ -15,6 +15,9 @@ import com.francisbailey.irc.mode.Mode;
  */
 public class ChannelModeArgStrategy extends AbstractModeStrategy implements ChannelModeStrategy {
 
+    final String PLUS = "+";
+    final String MINUS = "-";
+
     public ChannelModeArgStrategy(ServerManager instance) {
         super(instance);
     }
@@ -24,7 +27,8 @@ public class ChannelModeArgStrategy extends AbstractModeStrategy implements Chan
         if (mode.equals(Mode.CHAN_KEY)) {
             try {
                 channel.setKey(arg);
-                sendModeMessage(channel, c, mode, arg);
+                channel.addMode(mode);
+                sendModeMessage(channel, c, PLUS, mode, arg);
             } catch (ChannelKeyIsSetException e) {
                 throw new IRCActionException(ServerMessage.ERR_KEYSET, c.getClientInfo().getNick() + " " + channel.getName() + " :Error key already set");
             }
@@ -36,7 +40,8 @@ public class ChannelModeArgStrategy extends AbstractModeStrategy implements Chan
                     throw new Exception("Bad user limit value");
                 }
                 channel.setUserLimit(limit);
-                sendModeMessage(channel, c, mode, arg);
+                channel.addMode(mode);
+                sendModeMessage(channel, c, PLUS, mode, arg);
             } catch (Exception e) {
                 throw new IRCActionException(ServerMessage.ERR_BADMASK, c.getClientInfo().getNick() + " " + channel.getName() + " :Invalid user limit");
             }
@@ -47,16 +52,21 @@ public class ChannelModeArgStrategy extends AbstractModeStrategy implements Chan
     public void removeMode(Channel channel, Connection c, Mode mode, String arg) throws IRCActionException {
         if (mode.equals(Mode.CHAN_KEY)) {
             channel.clearKey();
+            channel.removeMode(mode);
+            sendModeMessage(channel, c, MINUS, mode, arg);
         } else {
             throw new IRCActionException(ServerMessage.ERR_BADMASK, c.getClientInfo().getNick() + " " + channel.getName() + " :Invalid user limit");
         }
     }
-    public void sendModeMessage(Channel channel, Connection c, Mode mode, String arg) {
-        c.send(ServerMessageBuilder
-                .from(c.getClientInfo().getNick())
-                .withReplyCode(ServerMessage.RPL_MODE)
-                .andMessage(channel.getName() + " +" + mode.getFlag() + " " + arg)
-                .build()
-        );
+
+    public void sendModeMessage(Channel channel, Connection c, String plusminus, Mode mode, String arg) {
+        for (Connection user : channel.getUsers()) {
+            user.send(ServerMessageBuilder
+                    .from(c.getClientInfo().getNick())
+                    .withReplyCode(ServerMessage.RPL_MODE)
+                    .andMessage(channel.getName() + " " + plusminus + mode.getFlag() + " " + arg)
+                    .build()
+            );
+        }
     }
 }
